@@ -80,8 +80,17 @@ class RecintosZoo {
 
     //TODO:
     //Verifica se há especies diferentes no recinto para considerar espaço extra
-    contabilizaEspacoRecinto(){
+    contabilizaEspacoRecinto(animalNovo,quantidadeAnimais){
 
+        for (let i=0; i<RecintosZoo.recintos.length;i++){
+            if(RecintosZoo.recintos[i].animais != animalNovo){
+                for(let j=0; j<RecintosZoo.animais.length;j++){
+                    if(animalNovo==RecintosZoo.animais[j].especie){
+                        RecintosZoo.recintos[i].espacoDisponivel-= (RecintosZoo.recintos[i].quantidade*RecintosZoo.animais[j].tamanho);
+                    }
+                }
+            }
+        }
     }
 
     analisaRecintos() {
