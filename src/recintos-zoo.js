@@ -29,7 +29,6 @@ class RecintosZoo {
                 }
             }
             RecintosZoo.recintos[i].espacoDisponivel = RecintosZoo.recintos[i].tamanhoTotal - (RecintosZoo.recintos[i].quantidade*RecintosZoo.animais[j].tamanho);
-            //console.log(RecintosZoo.recintos[i].espacoDisponivel);
         }
     }
 
@@ -78,26 +77,32 @@ class RecintosZoo {
         console.log(recintosViaveis);
     }
 
-    //TODO:
-    //Verifica se há especies diferentes no recinto para considerar espaço extra
+    //Contabiliza novo espaço disponível e verifica se há especies diferentes no recinto para considerar espaço extra
     contabilizaEspacoRecinto(animalNovo,quantidadeAnimais){
 
         for (let i=0; i<RecintosZoo.recintos.length;i++){
-            if(RecintosZoo.recintos[i].animais != animalNovo){
-                for(let j=0; j<RecintosZoo.animais.length;j++){
-                    if(animalNovo==RecintosZoo.animais[j].especie){
-                        RecintosZoo.recintos[i].espacoDisponivel-= (RecintosZoo.recintos[i].quantidade*RecintosZoo.animais[j].tamanho);
+            for(let j=0; j<RecintosZoo.animais.length;j++){
+                if(animalNovo==RecintosZoo.animais[j].especie){
+                    if(RecintosZoo.recintos[i].animais==animalNovo || RecintosZoo.recintos[i].animais==''){
+                        if(quantidadeAnimais*RecintosZoo.animais[j].tamanho<RecintosZoo.recintos[i].espacoDisponivel){
+                            RecintosZoo.recintos[i].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[j].tamanho);
+                        }
+                    } else if (RecintosZoo.recintos[i].animais!=animalNovo) {
+                        if(quantidadeAnimais*RecintosZoo.animais[j].tamanho<(RecintosZoo.recintos[i].espacoDisponivel-1)){
+                            RecintosZoo.recintos[i].espacoDisponivel--;
+                            RecintosZoo.recintos[i].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[j].tamanho);
+                        }
                     }
                 }
             }
+
+        console.log(RecintosZoo.recintos[i].espacoDisponivel);    
         }
     }
 
     analisaRecintos() {
-        // new RecintosZoo().calculaEspacoInicial();
-        // new RecintosZoo().verificaCarnivoro();
-        // new RecintosZoo().verificaRecintoHipopotamo();
-        new RecintosZoo().verificaRecintoMacaco();
+        new RecintosZoo().calculaEspacoInicial();
+        new RecintosZoo().contabilizaEspacoRecinto('CROCODILO', 1);
     }
 
 }
