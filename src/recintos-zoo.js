@@ -67,10 +67,15 @@ class RecintosZoo {
         return recintosViaveis;
     }
 
-    //TODO:
     //Verifica se há outros animais no recinto
     verificaRecintoMacaco(){
-
+        let recintosViaveis = [];
+        for (let i=0; i<RecintosZoo.recintos.length;i++){
+            if(RecintosZoo.recintos[i].quantidade != 0){
+                recintosViaveis.push(RecintosZoo.recintos[i].numero);
+            }
+        }
+        console.log(recintosViaveis);
     }
 
     //TODO:
@@ -80,9 +85,10 @@ class RecintosZoo {
     }
 
     analisaRecintos() {
-
+        // new RecintosZoo().calculaEspacoInicial();
+        // new RecintosZoo().verificaCarnivoro();
         // new RecintosZoo().verificaRecintoHipopotamo();
-
+        new RecintosZoo().verificaRecintoMacaco();
     }
 
 }
