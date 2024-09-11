@@ -29,6 +29,7 @@ class RecintosZoo {
                 }
             }
             RecintosZoo.recintos[i].espacoDisponivel = RecintosZoo.recintos[i].tamanhoTotal - (RecintosZoo.recintos[i].quantidade*RecintosZoo.animais[j].tamanho);
+            //console.log(RecintosZoo.recintos[i].espacoDisponivel);
         }
     }
 
@@ -39,7 +40,7 @@ class RecintosZoo {
             for(let j=0; j<RecintosZoo.animais.length; j++){
                 if (RecintosZoo.recintos[i].animais == RecintosZoo.animais[j].especie){
                     if(RecintosZoo.animais[j].carnivoro){
-                        recintosComCarnivoros.push(RecintosZoo.recintos[i].numero)
+                        recintosComCarnivoros.push(RecintosZoo.recintos[i])
                     }
                 }
             }
@@ -50,63 +51,202 @@ class RecintosZoo {
 
     //Verifica se há espécies no recinto e, caso haja, se o recinto é com savana e rio 
     verificaRecintoHipopotamo(){
-        let recintosViaveis = [];
+        let recintosPossiveis = [];
         for (let i=0; i < RecintosZoo.recintos.length; i++){
             let  aux=0;  
             if(RecintosZoo.recintos[i].animais != 'HIPOPOTAMO' && RecintosZoo.recintos[i].numero == 3){
-                recintosViaveis.push(RecintosZoo.recintos[i].numero);
+                recintosPossiveis.push(RecintosZoo.recintos[i]);
             }
-            console.log(RecintosZoo.recintos[i].animais);
             if(RecintosZoo.recintos[i].animais == 'HIPOPOTAMO' || RecintosZoo.recintos[i].animais == ''){
-                recintosViaveis.push(RecintosZoo.recintos[i].numero);
+                recintosPossiveis.push(RecintosZoo.recintos[i]);
             }
             
         }
 
-        return recintosViaveis;
+        return recintosPossiveis;
     }
 
     //Verifica se há outros animais no recinto
-    verificaRecintoMacaco(){
-        let recintosViaveis = [];
+    verificaRecintoMacaco(quantidadeAnimais){
+        let recintosPossiveis = [];
         for (let i=0; i<RecintosZoo.recintos.length;i++){
-            if(RecintosZoo.recintos[i].quantidade != 0){
-                recintosViaveis.push(RecintosZoo.recintos[i].numero);
+
+            if(RecintosZoo.recintos[i].quantidade != 0 || quantidadeAnimais > 1){
+                recintosPossiveis.push(RecintosZoo.recintos[i]);
             }
         }
-        console.log(recintosViaveis);
+        return recintosPossiveis;
     }
 
     //Contabiliza novo espaço disponível e verifica se há especies diferentes no recinto para considerar espaço extra
     contabilizaEspacoRecinto(animalNovo,quantidadeAnimais){
 
-        for (let i=0; i<RecintosZoo.recintos.length;i++){
-            for(let j=0; j<RecintosZoo.animais.length;j++){
-                if(animalNovo==RecintosZoo.animais[j].especie){
-                    if(RecintosZoo.recintos[i].animais==animalNovo || RecintosZoo.recintos[i].animais==''){
-                        if(quantidadeAnimais*RecintosZoo.animais[j].tamanho<RecintosZoo.recintos[i].espacoDisponivel){
-                            RecintosZoo.recintos[i].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[j].tamanho);
-                        }
-                    } else if (RecintosZoo.recintos[i].animais!=animalNovo) {
-                        if(quantidadeAnimais*RecintosZoo.animais[j].tamanho<(RecintosZoo.recintos[i].espacoDisponivel-1)){
-                            RecintosZoo.recintos[i].espacoDisponivel--;
-                            RecintosZoo.recintos[i].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[j].tamanho);
+        let recintosPossiveis = [];
+        for(let i=0; i<RecintosZoo.animais.length;i++){
+
+            if(animalNovo==RecintosZoo.animais[i].especie){
+
+                for(let j=0; j<RecintosZoo.recintos.length;j++){
+
+                    for (let k=0; k<RecintosZoo.animais[i].bioma.length;k++){
+                        for (let l=0;l<RecintosZoo.recintos[j].bioma.length;l++){
+                        
+                            if(RecintosZoo.animais[i].bioma[k]==RecintosZoo.recintos[j].bioma[l]){
+
+                                if(RecintosZoo.recintos[j].animais==animalNovo || RecintosZoo.recintos[j].animais==''){
+
+                                    if(quantidadeAnimais*RecintosZoo.animais[i].tamanho<=RecintosZoo.recintos[j].espacoDisponivel){
+
+                                        RecintosZoo.recintos[j].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[i].tamanho);
+                                        recintosPossiveis.push(RecintosZoo.recintos[j]);
+
+                                    }
+
+                                } else if (RecintosZoo.recintos[j].animais!=animalNovo) {
+                                    
+                                    if(quantidadeAnimais*RecintosZoo.animais[i].tamanho<=(RecintosZoo.recintos[j].espacoDisponivel-1)){
+                                        RecintosZoo.recintos[j].espacoDisponivel--;
+                                        RecintosZoo.recintos[j].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[i].tamanho);
+                                        recintosPossiveis.push(RecintosZoo.recintos[j]); 
+                                    }
+            
+                                }
+                            } else {
+                                continue;
+                            }
                         }
                     }
                 }
             }
 
-        console.log(RecintosZoo.recintos[i].espacoDisponivel);    
+                
         }
+        return(recintosPossiveis);
+
     }
 
-    analisaRecintos() {
+    analisaRecintos(animal, quantidade) {
+
         new RecintosZoo().calculaEspacoInicial();
-        new RecintosZoo().contabilizaEspacoRecinto('CROCODILO', 1);
+
+        let resultado = {
+            erro: null,
+            recintosViaveis: []
+        };
+
+        let aux=0;
+
+        for (let i=0; i<RecintosZoo.animais.length;i++){
+
+            if(animal == RecintosZoo.animais[i].especie){
+
+                aux=1;
+
+                if (quantidade>0){
+                    let recintosComEspaco = new RecintosZoo().contabilizaEspacoRecinto(animal,quantidade);
+                    let recintosComCarnivoros = new RecintosZoo().verificaCarnivoro();
+
+                    let haRecintosViaveis = false;
+
+                    if (animal=='MACACO'){
+                        
+                        const recintosPossiveis = [];
+
+                        let recintosParaMacacos = new RecintosZoo().verificaRecintoMacaco(quantidade);
+
+                        for(let j=0;j<recintosComCarnivoros.length;j++){
+                            for(let k=0;k<recintosComEspaco.length;k++){
+                                if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
+                                    recintosPossiveis.push(recintosComEspaco[k]);
+                                }
+                            }
+                        }
+
+                        for(let j=0;j<recintosPossiveis.length;j++){
+                            for(let k=0;k<recintosParaMacacos.length;k++){
+                                
+                                if(recintosPossiveis[j].numero == recintosParaMacacos[k].numero){
+                                    haRecintosViaveis = true;
+                                    resultado.recintosViaveis.push("Recinto "+ recintosPossiveis[j].numero +" (espaço livre: " + recintosPossiveis[j].espacoDisponivel + " total: " + recintosPossiveis[j].tamanhoTotal + ")");
+                                    console.log("Recinto "+ recintosPossiveis[j].numero +" (espaço livre: " + recintosPossiveis[j].espacoDisponivel + " total: " + recintosPossiveis[j].tamanhoTotal + ")");
+                                }
+                            }
+                        }
+    
+                    } else if(animal=='HIPOPOTAMO'){
+                        
+                        const recintosPossiveis = [];
+
+                        let recintosParaHipopotamos = new RecintosZoo().verificaRecintoHipopotamo();
+
+                        for(let j=0;j<recintosComCarnivoros.length;j++){
+                            for(let k=0;k<recintosComEspaco.length;k++){
+                                if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
+                                    recintosPossiveis.push(recintosComEspaco[k]);
+                                }
+                            }
+                        }
+
+                        for(let j=0;j<recintosPossiveis.length;j++){
+                            for(let k=0;k<recintosParaHipopotamos.length;k++){
+                                if(recintosPossiveis[j].numero == recintosParaHipopotamos[k].numero){
+                                    haRecintosViaveis = true;
+                                    resultado.recintosViaveis.push("Recinto ", recintosPossiveis[j].numero," (espaço livre: ", recintosPossiveis[j].espacoDisponivel," total: ", recintosPossiveis[j].tamanhoTotal,")");
+                                    console.log("Recinto ", recintosPossiveis[j].numero," (espaço livre: ", recintosPossiveis[j].espacoDisponivel," total: ", recintosPossiveis[j].tamanhoTotal,")");
+                                }
+                            }
+                        }
+
+                    } else if (animal=='GAZELA'){
+
+                        for(let j=0;j<recintosComCarnivoros.length;j++){
+                            for(let k=0;k<recintosComEspaco.length;k++){
+                                if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
+                                    haRecintosViaveis = true;
+                                    resultado.recintosViaveis.push("Recinto ", recintosComEspaco[j].numero," (espaço livre: ", recintosComEspaco[j].espacoDisponivel," total: ", recintosComEspaco[j].tamanhoTotal,")");
+                                    console.log("Recinto ", recintosComEspaco[j].numero," (espaço livre: ", recintosComEspaco[j].espacoDisponivel," total: ", recintosComEspaco[j].tamanhoTotal,")");
+                                }
+                            }
+                        }
+
+                    } else {
+
+                        for(let j=0;j<recintosComCarnivoros.length;j++){
+                            for(let k=0;k<recintosComEspaco.length;k++){
+                                if(recintosComCarnivoros[j].numero == recintosComEspaco[k].numero || recintosComEspaco[k].animais==''){
+                                    haRecintosViaveis = true;
+                                    resultado.recintosViaveis.push("Recinto ", recintosComEspaco[k].numero," (espaço livre: ", recintosComEspaco[k].espacoDisponivel," total: ", recintosComEspaco[k].tamanhoTotal,")");
+                                    console.log("Recinto ", recintosComEspaco[k].numero," (espaço livre: ", recintosComEspaco[k].espacoDisponivel," total: ", recintosComEspaco[k].tamanhoTotal,")");
+                                }
+                            }
+                        }
+
+                    }
+
+                    if(!haRecintosViaveis){
+                        console.error("Não há recinto viável");
+                        resultado.erro = "Não há recinto viável";
+                    }
+
+                } else {
+                    console.error("Quantidade inválida");
+                    resultado.erro = "Quantidade inválida";
+                }
+
+            } 
+  
+        }
+
+        if (aux==0){
+            console.error("Animal inválido");
+            resultado.erro = "Animal inválido";
+        }
+
+        return resultado;
     }
 
 }
 
-new RecintosZoo().analisaRecintos();
+new RecintosZoo().analisaRecintos('HIPOPOTAMO', 3);
 
 export { RecintosZoo as RecintosZoo };
