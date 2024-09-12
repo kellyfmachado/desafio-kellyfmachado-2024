@@ -54,9 +54,11 @@ class RecintosZoo {
     verificaRecintoHipopotamo(){
         let recintosPossiveis = [];
         for (let i=0; i < RecintosZoo.recintos.length; i++){ 
+
             if(RecintosZoo.recintos[i].animais != 'HIPOPOTAMO' && RecintosZoo.recintos[i].numero == 3){
                 recintosPossiveis.push(RecintosZoo.recintos[i]);
             }
+            
             if(RecintosZoo.recintos[i].animais == 'HIPOPOTAMO' || RecintosZoo.recintos[i].animais == ''){
                 recintosPossiveis.push(RecintosZoo.recintos[i]);
             }
@@ -88,24 +90,26 @@ class RecintosZoo {
         let recintosPossiveis = [];
         for(let i=0; i<RecintosZoo.animais.length;i++){
 
+            //Verifica de qual espécie é o animal
             if(animalNovo==RecintosZoo.animais[i].especie){
 
                 for(let j=0; j<RecintosZoo.recintos.length;j++){
 
+                    //Faz uma varredura pelos biomas dos recintos e os biomas dos animais a serem inseridos
                     for (let k=0; k<RecintosZoo.animais[i].bioma.length;k++){
                         for (let l=0;l<RecintosZoo.recintos[j].bioma.length;l++){
-                        
+                            
+                            //Verifica os biomas que o animal se sente confortável
                             if(RecintosZoo.animais[i].bioma[k]==RecintosZoo.recintos[j].bioma[l]){
 
+                                //Contabiliza o novo espaço disponível com a inserção dos animais em recintos vazios ou com animais da mesma espécie
                                 if(RecintosZoo.recintos[j].animais==animalNovo || RecintosZoo.recintos[j].animais==''){
 
                                     if(quantidadeAnimais*RecintosZoo.animais[i].tamanho<=RecintosZoo.recintos[j].espacoDisponivel){
-
                                         RecintosZoo.recintos[j].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[i].tamanho);
                                         recintosPossiveis.push(RecintosZoo.recintos[j]);
-
                                     }
-
+                                //Contabiliza o novo espaço disponível com a inserção de animais com espécies diferentes dos que já estão no recinto   
                                 } else if (RecintosZoo.recintos[j].animais!=animalNovo) {
                                     
                                     if(quantidadeAnimais*RecintosZoo.animais[i].tamanho<=(RecintosZoo.recintos[j].espacoDisponivel-1)){
@@ -113,18 +117,14 @@ class RecintosZoo {
                                         RecintosZoo.recintos[j].espacoDisponivel-= (quantidadeAnimais*RecintosZoo.animais[i].tamanho);
                                         recintosPossiveis.push(RecintosZoo.recintos[j]); 
                                     }
-            
                                 }
-                            } else {
-                                continue;
                             }
                         }
                     }
                 }
-            }
-
-                
+            }  
         }
+
         return(recintosPossiveis);
 
     }
@@ -138,15 +138,19 @@ class RecintosZoo {
             recintosViaveis: []
         };
 
-        let aux=0;
+        //Auxilia a verificar se o animal é válido
+        let aux=false;
 
         for (let i=0; i<RecintosZoo.animais.length;i++){
 
+            //Verifica se o animal está entre as possibilidades de animais do Zoológico    
             if(animal == RecintosZoo.animais[i].especie){
 
-                aux=1;
+                aux=true;
 
+                //Verifica se a quantidade é válida
                 if (quantidade>0){
+ 
                     let recintosComEspaco = new RecintosZoo().contabilizaEspacoRecinto(animal,quantidade);
                     let recintosComCarnivoros = new RecintosZoo().verificaCarnivoro();
 
@@ -158,6 +162,7 @@ class RecintosZoo {
 
                         let recintosParaMacacos = new RecintosZoo().verificaRecintoMacaco(quantidade);
 
+                        //Verifica quais recintos com espaço para os macacos não possuem animais carnívoros
                         for(let j=0;j<recintosComCarnivoros.length;j++){
                             for(let k=0;k<recintosComEspaco.length;k++){
                                 if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
@@ -166,6 +171,8 @@ class RecintosZoo {
                             }
                         }
 
+                        //Dos recintos anteriores, verifica quais estão de acordo com as regras 
+                        //de conforto particulares dos macacos
                         for(let j=0;j<recintosPossiveis.length;j++){
                             for(let k=0;k<recintosParaMacacos.length;k++){
                                 
@@ -183,6 +190,7 @@ class RecintosZoo {
 
                         let recintosParaHipopotamos = new RecintosZoo().verificaRecintoHipopotamo();
 
+                        //Verifica quais recintos com espaço para os hipopótamos não possuem animais carnívoros
                         for(let j=0;j<recintosComCarnivoros.length;j++){
                             for(let k=0;k<recintosComEspaco.length;k++){
                                 if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
@@ -191,6 +199,8 @@ class RecintosZoo {
                             }
                         }
 
+                        //Dos recintos anteriores, verifica quais estão de acordo com as regras 
+                        //de conforto particulares dos hipopótamos
                         for(let j=0;j<recintosPossiveis.length;j++){
                             for(let k=0;k<recintosParaHipopotamos.length;k++){
                                 if(recintosPossiveis[j].numero == recintosParaHipopotamos[k].numero){
@@ -203,6 +213,7 @@ class RecintosZoo {
 
                     } else if (animal=='GAZELA'){
 
+                        //Verifica quais recintos com espaço para as gazelas não possuem animais carnívoros
                         for(let j=0;j<recintosComCarnivoros.length;j++){
                             for(let k=0;k<recintosComEspaco.length;k++){
                                 if(recintosComCarnivoros[j].numero != recintosComEspaco[k].numero){
@@ -215,24 +226,16 @@ class RecintosZoo {
 
                     } else {
 
-                        const recintosPossiveis = [];
-
+                        //Verifica se o recintos com espaço para os carnívoros estão vazios
+                        //ou se possuem animais da mesma espécie
                         for(let j=0;j<recintosComEspaco.length;j++){
                             if(recintosComEspaco[j].animais == animal || recintosComEspaco[j].animais == ''){
-                                recintosPossiveis.push(recintosComEspaco[j]);
+                                haRecintosViaveis = true;
+                                resultado.recintosViaveis.push("Recinto " + recintosComEspaco[j].numero + " (espaço livre: " + recintosComEspaco[j].espacoDisponivel + " total: " + recintosComEspaco[j].tamanhoTotal + ")");
+                                console.log("Recinto " + recintosComEspaco[j].numero + " (espaço livre: " + recintosComEspaco[j].espacoDisponivel + " total: " + recintosComEspaco[j].tamanhoTotal + ")");
                             }
-                        }
-
-                        for(let j=0;j<recintosComCarnivoros.length;j++){
-                            for(let k=0;k<recintosPossiveis.length;k++){
-                                if(recintosComCarnivoros[j].numero == recintosPossiveis[k].numero || recintosPossiveis[k].animais==''){
-                                    haRecintosViaveis = true;
-                                    resultado.recintosViaveis.push("Recinto " + recintosPossiveis[k].numero + " (espaço livre: " + recintosPossiveis[k].espacoDisponivel + " total: " + recintosPossiveis[k].tamanhoTotal + ")");
-                                    console.log("Recinto " + recintosPossiveis[k].numero + " (espaço livre: " + recintosPossiveis[k].espacoDisponivel + " total: " + recintosPossiveis[k].tamanhoTotal + ")");
-                                }
-                            }
-                        }
-
+                         }
+                        
                     }
 
                     if(!haRecintosViaveis){
@@ -251,7 +254,7 @@ class RecintosZoo {
   
         }
 
-        if (aux==0){        
+        if (!aux){        
             resultado.recintosViaveis = null;
             resultado.erro = "Animal inválido";
             console.error("Animal inválido");
@@ -262,6 +265,7 @@ class RecintosZoo {
 
 }
 
+//Passagem dos argumentos e chamada do método
 const argumentos = process.argv.slice(2);
 new RecintosZoo().analisaRecintos(argumentos[0],argumentos[1]);
 
