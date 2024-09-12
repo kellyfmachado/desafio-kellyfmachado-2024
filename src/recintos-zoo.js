@@ -226,7 +226,7 @@ class RecintosZoo {
 
                     } else {
 
-                        //Verifica se o recintos com espaço para os carnívoros estão vazios
+                        //Verifica se os recintos com espaço para os carnívoros estão vazios
                         //ou se possuem animais da mesma espécie
                         for(let j=0;j<recintosComEspaco.length;j++){
                             if(recintosComEspaco[j].animais == animal || recintosComEspaco[j].animais == ''){
